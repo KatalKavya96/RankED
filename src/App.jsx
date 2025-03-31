@@ -1,16 +1,23 @@
 import React from 'react'
+import Navbar from "./components/Navbar.jsx"
+import Physics from './components/Physics.jsx'
+import Chemistry from './components/Chemistry.jsx'
+import Maths from './components/Maths.jsx'
+import PhysicsQ from './components/PhysicsQ.jsx'
+import HomePage from './HomePage.jsx'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 function App() {
 
-  return(
-
-    <>
-    <h1 className='text-red-800'>hello</h1>
-    
-    </>
-
-  )
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/physics" element={<PhysicsQ />} />
+      </Routes>
+    </Router>
+  );
 
 
 }
