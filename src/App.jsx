@@ -5,7 +5,9 @@ import Chemistry from './components/Chemistry.jsx'
 import Maths from './components/Maths.jsx'
 import PhysicsQ from './components/PhysicsQ.jsx'
 import HomePage from './HomePage.jsx'
+import MathsQ from './components/MathsQ.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ChemistryQ from './components/ChemistryQ.jsx'
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/physics" element={<PhysicsQ />} />
+        <Route path="/chemistry" element={<ChemistryQ/>}/>
+        <Route path="/maths" element={<MathsQ/>}/>
       </Routes>
     </Router>
   );

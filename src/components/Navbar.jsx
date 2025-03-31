@@ -5,7 +5,7 @@ const Navbar = () => {
   return (
     
         <>
-            <section className='w-full fixed top-0'>
+            <section className='w-full fixed top-0 z-50'>
                 <div className='flex justify-between items-center px-[3vw] bg-black/85 text-white/80'>
                     <div className='flex items-center justify-content gap-10'>
                         <img className='h-20 w-22' src='https://i.imgur.com/OpOueJv.png' alt='RankED Logo'></img>

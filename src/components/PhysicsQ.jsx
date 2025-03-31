@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from './Navbar'
 
 const PhysicsQ = () => {
-    const chapters=[{"name":"Mathematics in Physics", "ques":116 ,"questions":{}},
+    const chaptersP=[{"name":"Mathematics in Physics", "ques":116 ,"questions":{}},
         {"name":"Units and Dimensions", "ques":119 ,"questions":{}},
         {"name":"Motion in One Dimensions", "ques":161 ,"questions":{}},
         {"name":"Motion in Two Dimensions", "ques":113 ,"questions":{}},
@@ -39,9 +39,9 @@ const PhysicsQ = () => {
     <>
         <Navbar/>
         <section className='mt-35'>
-            {chapters.map((ele)=><div className='h-20 w-[50vw] border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
+            {chaptersP.map((ele)=><div className='h-20 w-[50vw] border-r-4 border-r-green-600 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
                 <h1 className='text-lg font-medium'>{ele.name}</h1>
-                <p className='text-xs'>{ele.ques}<span>Qs</span></p>
+                <p className='text-xs'>{ele.ques} <span>Qs</span></p>
             </div>)}
             <div className='h-30 w-85 border-2 border-black/60 fixed top-35 right-25 rounded-lg p-2 bg-white'>
                 <h1 className='text-3xl font-medium'>Physics</h1>
