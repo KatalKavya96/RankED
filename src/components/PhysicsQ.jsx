@@ -1,7 +1,9 @@
 import React from 'react'
 import Navbar from './Navbar'
+import { useNavigate } from 'react-router-dom';
 
 const PhysicsQ = () => {
+    const navigate = useNavigate();
     const chaptersP=[{"name":"Mathematics in Physics", "ques":116 ,"questions":{}},
         {"name":"Units and Dimensions", "ques":119 ,"questions":{}},
         {"name":"Motion in One Dimensions", "ques":161 ,"questions":{}},
@@ -39,7 +41,7 @@ const PhysicsQ = () => {
     <>
         <Navbar/>
         <section className='mt-35'>
-            {chaptersP.map((ele)=><div className='h-20 w-[50vw] border-r-4 border-r-green-600 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
+            {chaptersP.map((ele)=><div onClick={() => navigate(`/physics/${encodeURIComponent(ele.name)}`)} className='h-20 w-[50vw] border-r-4 border-r-green-600 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
                 <h1 className='text-lg font-medium'>{ele.name}</h1>
                 <p className='text-xs'>{ele.ques} <span>Qs</span></p>
             </div>)}
