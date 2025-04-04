@@ -1,6 +1,9 @@
 import React from 'react'
 import Navbar from './Navbar'
+import { useNavigate } from 'react-router-dom';
+
 const MathsQ = () => {
+    const navigate = useNavigate();
     const chaptersM=[{"name":"Basics of Maths", "ques":17 ,"questions":{}},
         {"name":"Quadritic Equations", "ques":172 ,"questions":{}},
         {"name":"Complex Numbers", "ques":194 ,"questions":{}},
@@ -35,7 +38,7 @@ const MathsQ = () => {
     <>
         <Navbar/>
         <section className='mt-35'>
-            {chaptersM.map((ele)=><div className='h-20 w-[50vw] border-r-4 border-r-blue-500 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
+            {chaptersM.map((ele)=><div onClick={() => navigate(`/maths/${encodeURIComponent(ele.name)}`)} className='h-20 w-[50vw] border-r-4 border-r-blue-500 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
                 <h1 className='text-lg font-medium'>{ele.name}</h1>
                 <p className='text-xs'>{ele.ques} <span>Qs</span></p>
             </div>)}

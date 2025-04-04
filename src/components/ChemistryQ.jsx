@@ -1,7 +1,10 @@
 import React from 'react'
 import Navbar from './Navbar'
+import { useNavigate } from 'react-router-dom';
+
 
 const ChemistryQ = () => {
+    const navigate = useNavigate();
     const chaptersC=[{"name":"Basic Concepts of Chemistry", "ques":180 ,"questions":{}},
         {"name":"Structure and Atom", "ques":215 ,"questions":{}},
         {"name":"Classification of Elements and Periodicity in Properties", "ques":157 ,"questions":{}},
@@ -31,7 +34,7 @@ const ChemistryQ = () => {
     <>
         <Navbar/>
         <section className='mt-35'>
-            {chaptersC.map((ele)=><div className='h-20 w-[50vw] border-r-4 border-r-orange-500 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
+            {chaptersC.map((ele)=><div onClick={() => navigate(`/chemistry/${encodeURIComponent(ele.name)}`)} className='h-20 w-[50vw] border-r-4 border-r-orange-500 border-2 border-black/60 mt-12 ml-[11vw] rounded-lg p-2 hover:scale-102 transition duration-100 bg-white active:scale-103 cursor-pointer'>
                 <h1 className='text-lg font-medium'>{ele.name}</h1>
                 <p className='text-xs'>{ele.ques} <span>Qs</span></p>
             </div>)}
