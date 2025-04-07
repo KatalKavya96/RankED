@@ -9,19 +9,31 @@ const Dashboard = () => {
   return (
     <>
       <Navbar />
-      <div className='absolute top-32 left-25'><ProfileCard/></div>
-      <div className='absolute bottom-11 right-25'>
-        <div className="mt-20 h-162 p-4 flex flex-col justify-center items-center">
-            <h1 className="text-white text-2xl font-bold mb-6">Your Dashboard</h1>
-            <div className='ml-[25vw] w-240 flex justify-around items-center p-1 gap-2'>
-                <SolvedStats/>
-                <SolvedStats/>
-                
-            </div>
-            <div className='ml-[25vw] w-240 h-57 flex justify-center items-center p-1'><Heatmap /></div>
+
+      <div className="flex flex-col lg:flex-row gap-6 px-4 mt-35 w-full max-w-[1350px] mx-auto border border-white py-10">
+
+        <div className="w-full lg:w-1/3 flex justify-center">
+          <ProfileCard />
+        </div>
+
+        <div className="w-full lg:w-2/3 flex flex-col items-center">
+          <h1 className="text-white text-2xl font-bold mb-6">Your Dashboard</h1>
+
+          <div className="w-full flex flex-wrap justify-center gap-4 mb-6">
+            <SolvedStats />
+            <SolvedStats />
+          </div>
+
+          <div className="w-full flex justify-center items-center">
+            <Heatmap />
+          </div>
         </div>
       </div>
-        <div className='fixed top-20 right-5'><ResetButton/></div>
+
+      
+      <div className="fixed top-20 right-5">
+        <ResetButton />
+      </div>
     </>
   );
 };

@@ -6,6 +6,7 @@ import { subDays, format, isSameDay, parseISO } from 'date-fns';
 
 
 const calculateStreak = () => {
+  
     const log = JSON.parse(localStorage.getItem('submissionLog') || '{}');
     const dates = Object.keys(log).filter(date => log[date] > 0).map(d => parseISO(d));
     dates.sort((a, b) => b - a); // Descending
@@ -120,7 +121,15 @@ const Heatmap = () => {
           stroke: #fff;
           stroke-width: 1px;
         }
+        @media (max-width: 640px) {
+        .react-calendar-heatmap text.month-label {
+          font-size: 10px;
+        }
+        .react-calendar-heatmap .react-calendar-heatmap-month {
+          margin-right: 6px;
+        }
       `}</style>
+      
     </section>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 
 const RecentSolves = ({ questions }) => {
   return (
-    <div className="flex-1 min-w-[200px]">
+    <div className="w-full sm:w-auto flex-1 min-w-[200px] max-w-sm px-2 sm:px-0">
       <h2 className="text-sm font-semibold mb-2 text-gray-300">Recent Solves</h2>
       <ul className="text-sm space-y-1 max-h-[140px] overflow-y-auto pr-2">
         {questions

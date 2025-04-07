@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';
+import { useParams, useLocation } from 'react-router-dom';
+
 
 // Helper Functions
 const filterQuestions = (questions, filters, search, bookmarked) => {
+  
+
   const { difficulty, shift, year, bookmarkedOnly } = filters;
   const shiftValue = shift.trim().toLowerCase();
 
@@ -43,6 +46,7 @@ const paginateQuestions = (questions, currentPage, QUESTIONS_PER_PAGE) => {
 };
 
 const ChapterQuestions = () => {
+  const { chapter: chapterName } = useParams();
   const optionRefs = {};
   const QUESTIONS_PER_PAGE = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,14 +61,20 @@ const ChapterQuestions = () => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showResult, setShowResult] = useState({});
   const [checked, setChecked] = useState({});
+  const location = useLocation();
+  const pathParts = location.pathname.split('/');
+  const subject = pathParts[1]?.charAt(0).toUpperCase() + pathParts[1]?.slice(1);
+  const subjectFromURL = pathParts[1].charAt(0).toUpperCase() + pathParts[1].slice(1);  // Physics / Chemistry / Maths
+
+
 
   useEffect(() => {
     localStorage.setItem('bookmarked', JSON.stringify(bookmarked));
   }, [bookmarked]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5001/api/questions?subject=Physics&chapter=${chapter}`)
-      .then(res => {
+    axios.get(`http://localhost:5001/api/questions?subject=${subject}&chapter=${chapter}`)
+    .then(res => {
         setQuestions(res.data);
         setFilteredQuestions(res.data);
         console.log(res)
@@ -114,27 +124,27 @@ const ChapterQuestions = () => {
       const selected = selectedOptions[qId];
       const correct = question.answer === selected;
   
-      // Log submission for heatmap (or streak)
       const today = new Date().toISOString().split('T')[0];
       const log = JSON.parse(localStorage.getItem('submissionLog') || '{}');
       log[today] = (log[today] || 0) + 1;
       localStorage.setItem('submissionLog', JSON.stringify(log));
   
-      // Track solved or wrong question
       const solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
       const wrong = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
       const stats = JSON.parse(localStorage.getItem('allQuestions') || '[]');
   
-      // Avoid logging same question multiple times
       const alreadyLogged = stats.some(entry => entry._id === qId);
       if (!alreadyLogged) {
         stats.push({
           _id: qId,
           difficulty: question.difficulty,
           question: question.question,
+          chapter: chapterName,
+          subject: question.subject || subjectFromURL,
           isCorrect: correct,
           timestamp: today,
         });
+        // ✅ Store updated stats
         localStorage.setItem('allQuestions', JSON.stringify(stats));
       }
   
@@ -145,6 +155,9 @@ const ChapterQuestions = () => {
         wrong.push(qId);
         localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
       }
+  
+      // Live update
+      window.dispatchEvent(new Event("solvedStatsUpdate"));
     }
   };
   
