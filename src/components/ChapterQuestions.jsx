@@ -125,41 +125,66 @@ const ChapterQuestions = () => {
       const correct = question.answer === selected;
   
       const today = new Date().toISOString().split('T')[0];
-      const log = JSON.parse(localStorage.getItem('submissionLog') || '{}');
-      log[today] = (log[today] || 0) + 1;
-      localStorage.setItem('submissionLog', JSON.stringify(log));
   
-      const solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
-      const wrong = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
+      // === Accuracy Tracking ===
+      const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
+      submissionLog[today] = (submissionLog[today] || 0) + 1;
+      localStorage.setItem('submissionLog', JSON.stringify(submissionLog));
+  
+      if (correct) {
+        const correctSub = Number(localStorage.getItem('correctSubmissions') || '0');
+        localStorage.setItem('correctSubmissions', String(correctSub + 1));
+      }
+  
+      // === Get subject from URL if not in question
+      const path = window.location.pathname.split('/');
+      const subjectFromURL = path[1] ? path[1].toLowerCase() : 'unknown';
+  
+      // === All Questions Log ===
       const stats = JSON.parse(localStorage.getItem('allQuestions') || '[]');
-  
       const alreadyLogged = stats.some(entry => entry._id === qId);
+  
       if (!alreadyLogged) {
         stats.push({
           _id: qId,
           difficulty: question.difficulty,
           question: question.question,
-          chapter: chapterName,
-          subject: question.subject || subjectFromURL,
+          chapter: chapterName || question.chapter || "unknown",
+          subject: question.subject || subjectFromURL || "unknown",
           isCorrect: correct,
           timestamp: today,
         });
-        // ✅ Store updated stats
+  
         localStorage.setItem('allQuestions', JSON.stringify(stats));
       }
   
-      if (correct && !solved.includes(qId)) {
-        solved.push(qId);
-        localStorage.setItem('solvedQuestions', JSON.stringify(solved));
-      } else if (!correct && !wrong.includes(qId)) {
+      // === Unique Progress Count (Solved/Wrong) ===
+      let solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
+      let wrong = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
+  
+      const alreadySolved = solved.includes(qId);
+      const alreadyWrong = wrong.includes(qId);
+  
+      if (correct) {
+        if (alreadyWrong) {
+          wrong = wrong.filter(id => id !== qId);
+          localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
+        }
+  
+        if (!alreadySolved) {
+          solved.push(qId);
+          localStorage.setItem('solvedQuestions', JSON.stringify(solved));
+          window.dispatchEvent(new Event("solvedStatsUpdate"));
+        }
+      }
+  
+      if (!correct && !alreadyWrong && !alreadySolved) {
         wrong.push(qId);
         localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
       }
-  
-      // Live update
-      window.dispatchEvent(new Event("solvedStatsUpdate"));
     }
   };
+  
   
 
   const handleRedo = (qId) => {
