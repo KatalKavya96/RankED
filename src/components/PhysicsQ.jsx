@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
 
-// ... imports remain unchanged
 const PhysicsQ = () => {
     const navigate = useNavigate();
     const [solvedMap, setSolvedMap] = useState({});
