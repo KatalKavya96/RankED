@@ -3,7 +3,6 @@ import axios from 'axios';
 import Navbar from './Navbar';
 import { useParams, useLocation } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
-import { BASE_URL } from "../constants";
 
 // Helper Functions
 const filterQuestions = (questions, filters, search, bookmarked) => {
@@ -68,7 +67,7 @@ const ChapterQuestions = () => {
       const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
       const correctSubmissions = parseInt(localStorage.getItem('correctSubmissions') || '0');
       if (user) {
-        await axios.patch(`${BASE_URL}/api/user/${user.uid}`, {
+        await axios.patch(`https://ranked-backend-production.up.railway.app/api/user/${user.uid}`, {
           solvedQuestions: solved,
           bookmarkedQuestions: bookmarked,
           submissionLog,
@@ -86,7 +85,7 @@ const ChapterQuestions = () => {
   }, [bookmarked]);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/questions?subject=${subject}&chapter=${chapter}`)
+    axios.get(`https://ranked-backend-production.up.railway.app/api/questions?subject=${subject}&chapter=${chapter}`)
     .then(res => {
         setQuestions(res.data);
         setFilteredQuestions(res.data);
@@ -102,6 +101,12 @@ const ChapterQuestions = () => {
   }, [filters, search, questions, sort, bookmarked]);
 
   const currentQuestions = paginateQuestions(filteredQuestions, currentPage, QUESTIONS_PER_PAGE);
+
+  const handleOptionSelect = (qId, option) => {
+    if (!checked[qId]) {
+      setSelectedOptions(prev => ({ ...prev, [qId]: option }));
+    }
+  };
 
   const handleCheckAnswer = (qId) => {
     if (selectedOptions[qId]) {

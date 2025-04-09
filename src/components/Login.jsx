@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../firebase';
 import axios from 'axios';
-import {BASE_URL} from "../constants"
+import { BASE_URL } from "../constants";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const createUserIfNotExists = async (user) => {
     try {
@@ -28,8 +30,8 @@ const Login = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in as:", result.user);
       await createUserIfNotExists(result.user);
+      navigate('/'); // ✅ redirect after login
     } catch (error) {
       alert(error.message);
     }
@@ -38,8 +40,8 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("Google User:", result.user);
       await createUserIfNotExists(result.user);
+      navigate('/'); // ✅ redirect after Google login
     } catch (error) {
       alert(error.message);
     }

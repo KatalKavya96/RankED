@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import axios from 'axios';
-import {BASE_URL} from "../constants"
+import { BASE_URL } from "../constants";
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const createUserIfNotExists = async (user) => {
     try {
@@ -28,8 +30,8 @@ const Signup = () => {
     e.preventDefault();
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User signed up:", userCred.user);
-      await createUserIfNotExists(userCred.user); // ✅ Call backend to create user progress doc
+      await createUserIfNotExists(userCred.user);
+      navigate('/'); // ✅ redirect after signup
     } catch (error) {
       alert(error.message);
     }
