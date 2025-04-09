@@ -26,8 +26,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-
-          {/* Protected Routes */}
           <Route path="/physics" element={<ProtectedRoutes><PhysicsQ /></ProtectedRoutes>} />
           <Route path="/chemistry" element={<ProtectedRoutes><ChemistryQ /></ProtectedRoutes>} />
           <Route path="/maths" element={<ProtectedRoutes><MathsQ /></ProtectedRoutes>} />
@@ -38,6 +36,9 @@ function App() {
         </Routes>
       </Router>
     </UserProvider>
+
+    
+
   );
 }
 

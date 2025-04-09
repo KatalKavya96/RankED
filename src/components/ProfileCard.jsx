@@ -1,8 +1,22 @@
 import React from 'react'
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import {useUser} from "../components/UserContext"
 
 const ProfileCard = () => {
     const { user } = useUser();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+    try {
+        await signOut(auth);
+        navigate('/login'); // redirect to login page
+        console.log("✅ User logged out");
+    } catch (error) {
+        console.error("❌ Logout failed:", error);
+    }
+    };
 
   return (
     
@@ -27,9 +41,20 @@ const ProfileCard = () => {
                 <h1 className='text-black/75 text-m'>India</h1>
                 <h1 className='text-black/75 text-m'>Newton School of Technology</h1>
                 <h1 className='text-black/75 text-m'>{user?.email || 'No Email'}</h1>
-                <h1 className='text-black/75 text-m'><a href=''>LinkedIn</a></h1>
+                <div className='flex items-center gap-36'>
+                    <h1 className='flex items-center justify-center text-black/75 text-m'><a href=''>LinkedIn</a></h1>
+                    <button
+                        onClick={handleLogout}
+                        className="w-20 h-7  py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-150 flex justify-center items-center"
+                        >
+                        Logout
+                    </button>
+                </div>
             </div>
+            
         </div>
+        
+
     </>
 
   )
