@@ -17,7 +17,7 @@ const ProfileCard = () => {
                 />  
                 <div>
                     <h1 className='text-black/80'>{user?.displayName || 'No Name'}</h1>
-                    <p className='text-black/60'>KavyaKatal96</p>
+                    {/* <p className='text-black/60'>KavyaKatal96</p> */}
                 </div>
             </div>
 

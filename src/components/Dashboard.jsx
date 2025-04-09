@@ -30,9 +30,9 @@ const Dashboard = () => {
       </div>
 
       
-      <div className="fixed top-20 right-5">
+      {/* <div className="fixed top-20 right-5">
         <ResetButton />
-      </div>
+      </div> */}
     </>
   );
 };
