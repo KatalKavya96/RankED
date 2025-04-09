@@ -11,28 +11,34 @@ import ChemistryQ from './components/ChemistryQ.jsx'
 import ChapterQuestions from './components/ChapterQuestions.jsx';
 import Heatmap from './components/Heatmap.jsx'
 import Dashboard from './components/Dashboard.jsx'
+import Login from './components/Login.jsx'
+import Signup from './components/Signup.jsx'
+import { UserProvider } from './components/UserContext.jsx';
+import ProtectedRoutes from './components/ProtectedRoutes.jsx'
+
 
 
 function App() {
-
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/physics" element={<PhysicsQ />} />
-        <Route path="/chemistry" element={<ChemistryQ/>}/>
-        <Route path="/maths" element={<MathsQ/>}/>
-        <Route path="/physics/:chapter" element={<ChapterQuestions />} />
-        <Route path="/chemistry/:chapter" element={<ChapterQuestions />} />
-        <Route path="/maths/:chapter" element={<ChapterQuestions />} />
-        <Route path="/profile" element={<Dashboard />} />
+    <UserProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
 
-
-      </Routes>
-    </Router>
-    
+          {/* Protected Routes */}
+          <Route path="/physics" element={<ProtectedRoutes><PhysicsQ /></ProtectedRoutes>} />
+          <Route path="/chemistry" element={<ProtectedRoutes><ChemistryQ /></ProtectedRoutes>} />
+          <Route path="/maths" element={<ProtectedRoutes><MathsQ /></ProtectedRoutes>} />
+          <Route path="/physics/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
+          <Route path="/chemistry/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
+          <Route path="/maths/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
+          <Route path="/profile" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
-
-
 }
+
 export default App
