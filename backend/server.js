@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';              // ✅ CORS import here
 import questionRoutes from './routes/questions.js';
+import userRoutes from './routes/userRoutes.js';
+
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use('/api/questions', questionRoutes);
+app.use('/api/user', userRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5001;
