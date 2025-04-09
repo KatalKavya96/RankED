@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../firebase';
-
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const createUserIfNotExists = async (user) => {
+    try {
+      await axios.post(`http://localhost:5001/api/user/${user.uid}`, {
+        uid: user.uid,
+        email: user.email
+      });
+      console.log("✅ User record initialized in MongoDB");
+    } catch (err) {
+      if (err.response?.status === 400) {
+        console.log("ℹ️ User already exists in MongoDB");
+      } else {
+        console.error("❌ Error creating user in MongoDB", err);
+      }
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in as:", userCred.user);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in as:", result.user);
+      await createUserIfNotExists(result.user);
     } catch (error) {
       alert(error.message);
     }
@@ -22,7 +38,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Google User:", result.user);
-      // ✅ You can now POST user info to MongoDB if needed
+      await createUserIfNotExists(result.user);
     } catch (error) {
       alert(error.message);
     }
@@ -30,23 +46,24 @@ const Login = () => {
 
   return (
     <>
-    <form onSubmit={handleLogin} className="flex flex-col gap-4 w-full max-w-sm mx-auto mt-24">
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border" />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border" />
-      <button type="submit" className="bg-green-500 text-white p-2 rounded">Log In</button>
-    </form>
-    <button
+      <form onSubmit={handleLogin} className="flex flex-col gap-4 w-full max-w-sm mx-auto mt-24">
+        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border" />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border" />
+        <button type="submit" className="bg-green-500 text-white p-2 rounded">Log In</button>
+      </form>
+
+      <button
         type="button"
         onClick={handleGoogleLogin}
         className="bg-red-500 text-white p-2 rounded mt-2"
-        >
+      >
         Sign in with Google
-    </button>
+      </button>
 
-    <p className="text-sm text-center mt-2">
+      <p className="text-sm text-center mt-2">
         Don't have an account? <a href="/signup" className="text-blue-500 underline">Sign up</a>
-    </p>
-  </>
+      </p>
+    </>
   );
 };
 

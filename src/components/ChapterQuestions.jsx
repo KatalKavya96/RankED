@@ -2,25 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 import { useParams, useLocation } from 'react-router-dom';
-
+import { useUser } from '../context/UserContext';
 
 // Helper Functions
 const filterQuestions = (questions, filters, search, bookmarked) => {
-  
-
   const { difficulty, shift, year, bookmarkedOnly } = filters;
   const shiftValue = shift.trim().toLowerCase();
 
-  
-
   return questions.filter(q => {
     if (bookmarkedOnly && !bookmarked.includes(q._id)) return false;
-
     const qYear = String(q.year).trim();
     const qShift = String(q.shift).trim().toLowerCase();
     const qDifficulty = String(q.difficulty).trim().toLowerCase();
     const matchesSearch = q.question.toLowerCase().includes(search.toLowerCase());
-
     return (
       (!difficulty || qDifficulty === difficulty.toLowerCase()) &&
       (!shift || qShift === shiftValue) &&
@@ -35,7 +29,6 @@ const sortQuestions = (questions, sort) => {
   if (sort === 'year-desc') sorted.sort((a, b) => b.year - a.year);
   else if (sort === 'year-asc') sorted.sort((a, b) => a.year - b.year);
   else if (sort === 'difficulty') sorted.sort((a, b) => a.difficulty.localeCompare(b.difficulty));
-
   return sorted;
 };
 
@@ -64,9 +57,28 @@ const ChapterQuestions = () => {
   const location = useLocation();
   const pathParts = location.pathname.split('/');
   const subject = pathParts[1]?.charAt(0).toUpperCase() + pathParts[1]?.slice(1);
-  const subjectFromURL = pathParts[1].charAt(0).toUpperCase() + pathParts[1].slice(1);  // Physics / Chemistry / Maths
+  const subjectFromURL = pathParts[1].charAt(0).toUpperCase() + pathParts[1].slice(1);
+  const { user } = useUser();
 
-
+  const syncProgressToDB = async () => {
+    try {
+      const solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
+      const bookmarked = JSON.parse(localStorage.getItem('bookmarked') || '[]');
+      const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
+      const correctSubmissions = parseInt(localStorage.getItem('correctSubmissions') || '0');
+      if (user) {
+        await axios.patch(`http://localhost:5001/api/user/${user.uid}`, {
+          solvedQuestions: solved,
+          bookmarkedQuestions: bookmarked,
+          submissionLog,
+          correctSubmissions
+        });
+        console.log("✅ Progress synced to MongoDB");
+      }
+    } catch (err) {
+      console.error("❌ Failed to sync progress", err);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('bookmarked', JSON.stringify(bookmarked));
@@ -90,6 +102,64 @@ const ChapterQuestions = () => {
 
   const currentQuestions = paginateQuestions(filteredQuestions, currentPage, QUESTIONS_PER_PAGE);
 
+  const handleCheckAnswer = (qId) => {
+    if (selectedOptions[qId]) {
+      setChecked(prev => ({ ...prev, [qId]: true }));
+      setShowResult(prev => ({ ...prev, [qId]: true }));
+      const question = questions.find(q => q._id === qId);
+      const selected = selectedOptions[qId];
+      const correct = question.answer === selected;
+      const today = new Date().toISOString().split('T')[0];
+      const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
+      submissionLog[today] = (submissionLog[today] || 0) + 1;
+      localStorage.setItem('submissionLog', JSON.stringify(submissionLog));
+      if (correct) {
+        const correctSub = Number(localStorage.getItem('correctSubmissions') || '0');
+        localStorage.setItem('correctSubmissions', String(correctSub + 1));
+      }
+      const stats = JSON.parse(localStorage.getItem('allQuestions') || '[]');
+      const alreadyLogged = stats.some(entry => entry._id === qId);
+      if (!alreadyLogged) {
+        stats.push({
+          _id: qId,
+          difficulty: question.difficulty,
+          question: question.question,
+          chapter: chapterName || question.chapter || "unknown",
+          subject: question.subject || subjectFromURL || "unknown",
+          isCorrect: correct,
+          timestamp: today,
+        });
+        localStorage.setItem('allQuestions', JSON.stringify(stats));
+      }
+      let solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
+      let wrong = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
+      const alreadySolved = solved.includes(qId);
+      const alreadyWrong = wrong.includes(qId);
+      if (correct) {
+        if (alreadyWrong) {
+          wrong = wrong.filter(id => id !== qId);
+          localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
+        }
+        if (!alreadySolved) {
+          solved.push(qId);
+          localStorage.setItem('solvedQuestions', JSON.stringify(solved));
+          window.dispatchEvent(new Event("solvedStatsUpdate"));
+        }
+      }
+      if (!correct && !alreadyWrong && !alreadySolved) {
+        wrong.push(qId);
+        localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
+      }
+      syncProgressToDB();
+    }
+  };
+
+  const handleRedo = (qId) => {
+    setSelectedOptions(prev => ({ ...prev, [qId]: '' }));
+    setShowResult(prev => ({ ...prev, [qId]: false }));
+    setChecked(prev => ({ ...prev, [qId]: false }));
+  };
+
   const handleNextPage = () => {
     setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredQuestions.length / QUESTIONS_PER_PAGE)));
   };
@@ -109,107 +179,9 @@ const ChapterQuestions = () => {
     setSearch('');
   };
 
-  const handleOptionSelect = (qId, option) => {
-    if (!checked[qId]) {
-      setSelectedOptions(prev => ({ ...prev, [qId]: option }));
-    }
-  };
-
-  const handleCheckAnswer = (qId) => {
-    if (selectedOptions[qId]) {
-      setChecked(prev => ({ ...prev, [qId]: true }));
-      setShowResult(prev => ({ ...prev, [qId]: true }));
-  
-      const question = questions.find(q => q._id === qId);
-      const selected = selectedOptions[qId];
-      const correct = question.answer === selected;
-  
-      const today = new Date().toISOString().split('T')[0];
-  
-      // === Accuracy Tracking ===
-      const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
-      submissionLog[today] = (submissionLog[today] || 0) + 1;
-      localStorage.setItem('submissionLog', JSON.stringify(submissionLog));
-  
-      if (correct) {
-        const correctSub = Number(localStorage.getItem('correctSubmissions') || '0');
-        localStorage.setItem('correctSubmissions', String(correctSub + 1));
-      }
-  
-      // === Get subject from URL if not in question
-      const path = window.location.pathname.split('/');
-      const subjectFromURL = path[1] ? path[1].toLowerCase() : 'unknown';
-  
-      // === All Questions Log ===
-      const stats = JSON.parse(localStorage.getItem('allQuestions') || '[]');
-      const alreadyLogged = stats.some(entry => entry._id === qId);
-  
-      if (!alreadyLogged) {
-        stats.push({
-          _id: qId,
-          difficulty: question.difficulty,
-          question: question.question,
-          chapter: chapterName || question.chapter || "unknown",
-          subject: question.subject || subjectFromURL || "unknown",
-          isCorrect: correct,
-          timestamp: today,
-        });
-  
-        localStorage.setItem('allQuestions', JSON.stringify(stats));
-      }
-  
-      // === Unique Progress Count (Solved/Wrong) ===
-      let solved = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
-      let wrong = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
-  
-      const alreadySolved = solved.includes(qId);
-      const alreadyWrong = wrong.includes(qId);
-  
-      if (correct) {
-        if (alreadyWrong) {
-          wrong = wrong.filter(id => id !== qId);
-          localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
-        }
-  
-        if (!alreadySolved) {
-          solved.push(qId);
-          localStorage.setItem('solvedQuestions', JSON.stringify(solved));
-          window.dispatchEvent(new Event("solvedStatsUpdate"));
-        }
-      }
-  
-      if (!correct && !alreadyWrong && !alreadySolved) {
-        wrong.push(qId);
-        localStorage.setItem('wrongQuestions', JSON.stringify(wrong));
-      }
-    }
-  };
-  
-  
-
-  const handleRedo = (qId) => {
-    setSelectedOptions(prev => ({ ...prev, [qId]: '' }));
-    setShowResult(prev => ({ ...prev, [qId]: false }));
-    setChecked(prev => ({ ...prev, [qId]: false }));
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      Object.entries(optionRefs).forEach(([id, ref]) => {
-        if (ref && !ref.contains(event.target)) {
-          setSelectedOptions(prev => ({ ...prev, [id]: '' }));
-          setShowResult(prev => ({ ...prev, [id]: false }));
-          setChecked(prev => ({ ...prev, [id]: false }));
-        }
-      });
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(date).toLocaleDateString(undefined, options); // Example: "April 25, 2025"
+    return new Date(date).toLocaleDateString(undefined, options);
   };
 
   return (
