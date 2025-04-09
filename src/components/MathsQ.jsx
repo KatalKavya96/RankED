@@ -195,7 +195,7 @@ const MathsQ = () => {
                 <p className="text-xs mb-3">{solved} / {ele.ques} Questions Solved</p>
                 <div className="w-full bg-gray-300 rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="bg-orange-500 h-2.5 rounded-full animate-grow transition-all duration-1000"
+                    className="bg-blue-500 h-2.5 rounded-full animate-grow transition-all duration-1000"
                     style={{ width: `${percent}%` }}
                   ></div>
                 </div>
