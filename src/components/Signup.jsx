@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import axios from 'axios';
+import {BASE_URL} from "../constants"
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const Signup = () => {
 
   const createUserIfNotExists = async (user) => {
     try {
-      await axios.post(`http://localhost:5001/api/user/${user.uid}`, {
+      await axios.post(`${BASE_URL}/api/user/${user.uid}`, {
         uid: user.uid,
         email: user.email
       });

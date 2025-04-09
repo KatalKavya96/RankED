@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 import { useParams, useLocation } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
+import { useUser } from '../components/UserContext';
+import { BASE_URL } from "../constants";
 
 // Helper Functions
 const filterQuestions = (questions, filters, search, bookmarked) => {
@@ -67,7 +68,7 @@ const ChapterQuestions = () => {
       const submissionLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
       const correctSubmissions = parseInt(localStorage.getItem('correctSubmissions') || '0');
       if (user) {
-        await axios.patch(`http://localhost:5001/api/user/${user.uid}`, {
+        await axios.patch(`${BASE_URL}/api/user/${user.uid}`, {
           solvedQuestions: solved,
           bookmarkedQuestions: bookmarked,
           submissionLog,
@@ -85,7 +86,7 @@ const ChapterQuestions = () => {
   }, [bookmarked]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5001/api/questions?subject=${subject}&chapter=${chapter}`)
+    axios.get(`${BASE_URL}/api/questions?subject=${subject}&chapter=${chapter}`)
     .then(res => {
         setQuestions(res.data);
         setFilteredQuestions(res.data);
