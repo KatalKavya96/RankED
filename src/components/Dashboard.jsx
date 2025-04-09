@@ -10,14 +10,13 @@ const Dashboard = () => {
     <>
       <Navbar />
 
-      <div className="flex flex-col lg:flex-row gap-6 px-4 mt-35 w-full max-w-[1350px] mx-auto border border-white py-10">
+      <div className="flex items-center justify-center lg:flex-row gap-6 px-4 mt-32 w-full max-w-[1350px] mx-auto border border-white py-10">
 
         <div className="w-full lg:w-1/3 flex justify-center">
           <ProfileCard />
         </div>
 
         <div className="w-full lg:w-2/3 flex flex-col items-center">
-          <h1 className="text-white text-2xl font-bold mb-6">Your Dashboard</h1>
 
           <div className="w-full flex flex-wrap justify-center gap-4 mb-6">
             <SolvedStats />

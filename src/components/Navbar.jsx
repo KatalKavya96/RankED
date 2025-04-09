@@ -45,7 +45,7 @@ const Navbar = () => {
     
         <>
             <section className='w-full fixed top-0 z-50'>
-                <div className='flex justify-between items-center px-[3vw] bg-zinc-900 text-white/80'>
+                <div className='flex justify-between items-center px-[3vw] border border-black bg-black/70 text-white/80'>
                     <div className='flex items-center justify-content gap-10'>
                         <img className='h-20 w-22' src='https://i.imgur.com/OpOueJv.png' alt='RankED Logo'></img>
                         <div className='w-15 font-medium  hover:bg-white/15 p-2 rounded-2xl flex items-center justify-center cursor-pointer'>Play</div>

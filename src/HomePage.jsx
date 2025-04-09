@@ -22,9 +22,9 @@ const HomePage = () => {
   return (
     <>
         <Navbar/>
-        <div className='h-[100vh] flex justify-around mt-35 flex-wrap'>
+        <div className='h-[100vh] flex justify-around mt-35'>
           <div className='flex flex-col items-center '>
-            <section className='w-280 h-60 flex justify-center items-start gap-15 flex-wrap items-center -mb-10'>
+            <section className='w-280 h-60 flex justify-center items-start gap-15 flex-wrap  -mb-10'>
                 <Physics/>
                 <Chemistry/>
                 <Maths/>
@@ -32,7 +32,7 @@ const HomePage = () => {
             </section>
             <section className='flex itmes-center justify-center flex-wrap gap-5 w-280 '>
               <h1 className='text-m font-medium text-black'>Examinations</h1>
-              <div className='w-280 flex flex-wrap gap-5 items-center justify-around '>
+              <div className='w-280 flex flex-wrap gap-5 items-center justify-around'>
                 {examsList.map((ele)=>{return  <Exams  name={ele.exam} url={ele.img}/>})}
               </div>
             </section>

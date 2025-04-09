@@ -53,7 +53,7 @@ const SolvedStats = () => {
   };
 
   return (
-    <section className="h-auto w-full max-w-[950px] mx-auto border border-black rounded-xl text-white bg-zinc-900   px-5 py-5 ">
+    <section className="h-auto w-[48%] min-w-[48%] max-w-[950px] mx-auto border border-black/25 rounded-xl text-white bg-white shadow-xl   px-5 py-5 ">
       <div className="flex justify-between items-start gap-6 flex-wrap">
         {/* Circular Segmented Progress */}
         <div className="relative group" style={{ width: 130, height: 130 }}>
@@ -101,12 +101,12 @@ const SolvedStats = () => {
             })()}
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none group-hover:opacity-0 transition-opacity">
-            <strong className="text-4xl text-white/90">{totalSolved}</strong>
-            <span className="text-xs text-white/70">of {Object.values(totalQuestions).reduce((a, b) => a + b, 0)}</span>
-            <p className="text-xs text-green-400 mt-2">✓ Solved</p>
+            <strong className="text-4xl text-black/70">{totalSolved}</strong>
+            <span className="text-xs text-black/70">of {Object.values(totalQuestions).reduce((a, b) => a + b, 0)}</span>
+            <p className="text-xs text-green-600 mt-2">✓ Solved</p>
           </div>
           <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className='text-xs text-white/80'>Accuracy : </span>  {accuracy}%
+            <span className='text-xs text-black/80'>Accuracy : </span>  {accuracy}%
           </div>
         </div>
 
@@ -115,21 +115,21 @@ const SolvedStats = () => {
           {difficultyStats.map(({ level, solved, total }) => (
             <div
               key={level}
-              className="flex justify-between items-center p-2 bg-[#2b2b2b] rounded-md cursor-pointer hover:bg-[#3b3b3b]"
+              className="flex justify-between items-center p-2 bg-[#FAFAFA] border border-black/20 rounded-md cursor-pointer hover:bg-white"
               onClick={() => console.log(`Filter: ${level}`)}
             >
               <span
                 className={`font-semibold ${
                   level === 'Easy'
-                    ? 'text-cyan-400/90'
+                    ? 'text-cyan-500/90'
                     : level === 'Medium'
-                    ? 'text-yellow-400/90'
-                    : 'text-red-400/90'
+                    ? 'text-yellow-500'
+                    : 'text-red-500/90'
                 }`}
               >
                 {level}.
               </span>
-              <span className="text-xs text-white/90">
+              <span className="text-xs text-black/90">
                 {solved}/{total} ({Math.round((solved / (total || 1)) * 100)}%)
               </span>
             </div>

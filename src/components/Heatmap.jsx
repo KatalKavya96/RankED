@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { subDays, format, isSameDay, parseISO } from 'date-fns';
+import "../index.css"
 
 
 
@@ -46,15 +47,15 @@ const Heatmap = () => {
 
   
   return (
-    <section className="h-auto w-full max-w-[950px] border border-black rounded-xl text-white bg-zinc-900 px-5 py-5 ">
+    <section className="h-auto w-full max-w-[950px] border border-black/25 rounded-xl text-black bg-white  px-5 py-5 shadow-xl">
       <div className="flex justify-between items-center px-2 pb-4">
-        <h1 className="text-lg text-white/90 font-semibold">{data.reduce((a, b) => a + b.count, 0)} submissions in the past one year</h1>
-        <div className="flex gap-8 text-xs text-white/90">
+        <h1 className="text-lg text-black/70 font-semibold">{data.reduce((a, b) => a + b.count, 0)} submissions in the past one year</h1>
+        <div className="flex gap-8 text-xs text-black/70">
           <p>Total active days: {data.filter(d => d.count > 0).length}</p>
           <p>Current Streak: {streak}</p>
           <div>
             <label htmlFor="Current" className="mr-1">Current</label>
-            <select id="Current" name="Current" className="bg-black text-white border px-1 py-0.5 rounded">
+            <select id="Current" name="Current" className="text-black border border-black px-1 py-0.5 rounded">
               <option>2024</option>
             </select>
           </div>
@@ -90,43 +91,43 @@ const Heatmap = () => {
 
       <style>{`
         .react-calendar-heatmap text.month-label {
-          fill: #bbb;
-          font-size: 12px;
+          fill: rgba(0,0,0,1);
+          font-size: 15px;
           font-weight: 500;
         }
         .react-calendar-heatmap .color-empty {
-          fill: #2e2e2e;
+          fill: rgba(230,230,230);
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-1 {
-          fill: #9be9a8;
+          fill: #f1f5f9;
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-2 {
-          fill: #40c463;
+          fill: #93c5fd;
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-3 {
-          fill: #30a14e;
+          fill: #93c5fd;
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-4 {
-          fill: #216e39;
+          fill: #2563eb;
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .react-calendar-heatmap-month {
-          margin-right: 12px;
+          margin-right: 15px;
         }
         .react-calendar-heatmap rect:hover {
-          stroke: #fff;
-          stroke-width: 1px;
+          stroke: rgba(0,0,0,0.2);
+          stroke-width: 2px;
         }
         @media (max-width: 640px) {
         .react-calendar-heatmap text.month-label {
           font-size: 10px;
         }
         .react-calendar-heatmap .react-calendar-heatmap-month {
-          margin-right: 6px;
+          margin-right: 15px;
         }
       `}</style>
       
