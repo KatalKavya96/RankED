@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import RecentSolves from './RecentSolved';
 
-const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSubmissions, correctSubmissions: externalCorrect }) => {
+const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSubmissions, correctSubmissions: externalCorrect, difficultyBreakdown = [] }) => {
   const [questions, setQuestions] = useState([]);
   const [accuracy, setAccuracy] = useState(0);
   const [totalSubmissions, setTotalSubmissions] = useState(0);
@@ -9,31 +9,31 @@ const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSu
   const totalQuestions = {
     Easy: 50,
     Medium: 30,
-    Hard: 20 
+    Hard: 20
   };
 
-  const updateSolvedStats = () => {
+  useEffect(() => {
     if (externalSolved !== undefined && externalSubmissions !== undefined && externalCorrect !== undefined) {
       setTotalSubmissions(externalSubmissions);
       setAccuracy(externalSubmissions > 0 ? Math.round((externalCorrect / externalSubmissions) * 100) : 0);
       return;
     }
 
-    const solvedIds = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
-    const allQuestions = JSON.parse(localStorage.getItem('allQuestions') || '[]');
-    const wrongLog = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
-    const totalAttempts = solvedIds.length + wrongLog.length;
-    const acc = totalAttempts > 0 ? Math.round((solvedIds.length / totalAttempts) * 100) : 0;
-    setAccuracy(acc);
+    const updateSolvedStats = () => {
+      const solvedIds = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
+      const allQuestions = JSON.parse(localStorage.getItem('allQuestions') || '[]');
+      const wrongLog = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
+      const totalAttempts = solvedIds.length + wrongLog.length;
+      const acc = totalAttempts > 0 ? Math.round((solvedIds.length / totalAttempts) * 100) : 0;
+      setAccuracy(acc);
 
-    const updated = allQuestions.map(q => ({ ...q, isSolved: solvedIds.includes(q._id) }));
-    setQuestions(updated);
+      const updated = allQuestions.map(q => ({ ...q, isSolved: solvedIds.includes(q._id) }));
+      setQuestions(updated);
 
-    const heatmapLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
-    setTotalSubmissions(Object.values(heatmapLog).reduce((sum, val) => sum + val, 0));
-  };
+      const heatmapLog = JSON.parse(localStorage.getItem('submissionLog') || '{}');
+      setTotalSubmissions(Object.values(heatmapLog).reduce((sum, val) => sum + val, 0));
+    };
 
-  useEffect(() => {
     updateSolvedStats();
     const handleStorageChange = () => updateSolvedStats();
     window.addEventListener('solvedStatsUpdate', handleStorageChange);
@@ -45,11 +45,13 @@ const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSu
     };
   }, [externalSolved, externalSubmissions, externalCorrect]);
 
-  const difficultyStats = ['Easy', 'Medium', 'Hard'].map(level => {
-    const levelQs = questions.filter(q => q.difficulty === level);
-    const solved = levelQs.filter(q => q.isSolved).length;
-    return { level, solved, total: totalQuestions[level] };
-  });
+  const difficultyStats = (externalSolved !== undefined && difficultyBreakdown.length > 0)
+    ? difficultyBreakdown
+    : ['Easy', 'Medium', 'Hard'].map(level => {
+        const levelQs = questions.filter(q => q.difficulty === level);
+        const solved = levelQs.filter(q => q.isSolved).length;
+        return { level, solved, total: totalQuestions[level] };
+      });
 
   const computedSolved = difficultyStats.reduce((sum, stat) => sum + stat.solved, 0);
   const finalSolved = externalSolved !== undefined ? externalSolved : computedSolved;
@@ -61,7 +63,7 @@ const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSu
   };
 
   return (
-    <section className="h-auto w-[48%] min-w-[48%] max-w-[950px] mx-auto border border-black/25 rounded-xl text-white bg-white shadow-xl   px-5 py-5 ">
+    <section className="h-auto w-[48%] min-w-[48%] max-w-[950px] mx-auto border border-black/25 rounded-xl text-white bg-white shadow-xl px-5 py-5 ">
       <div className="flex justify-between items-start gap-6 flex-wrap">
         {/* Circular Segmented Progress */}
         <div className="relative group" style={{ width: 130, height: 130 }}>
@@ -70,15 +72,6 @@ const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSu
               const radius = 15.9155;
               const circumference = 2 * Math.PI * radius;
               let offset = 0;
-
-              <circle
-                cx="18"
-                cy="18"
-                r={radius}
-                fill="none"
-                stroke="rgba(255, 255, 255, 0.5)"
-                strokeWidth="2.2"
-              />
 
               return difficultyStats.map(({ level, solved, total }) => {
                 const percent = total > 0 ? solved / total : 0;

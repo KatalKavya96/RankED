@@ -6,8 +6,9 @@ import { useUser } from '../components/UserContext';
 import axios from 'axios';
 import { BASE_URL } from '../constants';
 
-const ProfileCard = () => {
+const ProfileCard = ({ externalData }) => {
   const { user } = useUser();
+  const currentUser = externalData || user;
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -21,22 +22,29 @@ const ProfileCard = () => {
   const [searchResult, setSearchResult] = useState(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user?.uid) return;
-      try {
-        const res = await axios.get(`${BASE_URL}/api/user/${user.uid}`);
-        const data = res.data;
-        setUsername(data.username || '');
-        setLocation(data.location || '');
-        setCollege(data.college || '');
-        setLinkedin(data.linkedin || '');
-        setLastChanged(data.usernameLastChanged);
-      } catch (err) {
-        console.error("❌ Error fetching profile", err);
-      }
-    };
-    fetchProfile();
-  }, [user]);
+    if (externalData) {
+      setUsername(externalData.username || '');
+      setLocation(externalData.location || '');
+      setCollege(externalData.college || '');
+      setLinkedin(externalData.linkedin || '');
+      setLastChanged(externalData.usernameLastChanged);
+    } else if (user?.uid) {
+      const fetchProfile = async () => {
+        try {
+          const res = await axios.get(`${BASE_URL}/api/user/${user.uid}`);
+          const data = res.data;
+          setUsername(data.username || '');
+          setLocation(data.location || '');
+          setCollege(data.college || '');
+          setLinkedin(data.linkedin || '');
+          setLastChanged(data.usernameLastChanged);
+        } catch (err) {
+          console.error("❌ Error fetching profile", err);
+        }
+      };
+      fetchProfile();
+    }
+  }, [externalData, user]);
 
   const handleLogout = async () => {
     try {
@@ -101,17 +109,17 @@ const ProfileCard = () => {
     <div className='w-full h-fit max-w-xs bg-white rounded-xl p-4 mx-auto md:mx-0 border border-black/25 shadow-xl'>
       <div className='flex items-center justify-between p-2 my-5'>
         <img
-          src={user?.photoURL || 'https://i.postimg.cc/SKfhtdnJ/avatar-placeholder.png'}
+          src={currentUser?.photoURL || 'https://i.postimg.cc/SKfhtdnJ/avatar-placeholder.png'}
           alt="Profile"
           className='w-20 h-20 bg-blue-600/15 border border-blue-300 rounded-xl object-cover'
         />
         <div>
-          <h1 className='text-black/80'>{user?.displayName || 'No Name'}</h1>
+          <h1 className='text-black/80'>{currentUser?.displayName || 'No Name'}</h1>
         </div>
       </div>
 
       <h1 className='text-black/75 text-m'>@{username}</h1>
-      {isEditing && (
+      {!externalData && isEditing && (
         <button
           onClick={handleUsernameChange}
           className="text-xs text-blue-500 underline"
@@ -120,12 +128,14 @@ const ProfileCard = () => {
         </button>
       )}
 
-      <button
-        onClick={() => setIsEditing(!isEditing)}
-        className='border text-blue-600 border-blue-300 flex justify-center items-center bg-blue-600/15 rounded-xl my-5 p-2 w-full'
-      >
-        {isEditing ? 'Cancel' : 'Edit Profile'}
-      </button>
+      {!externalData && (
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className='border text-blue-600 border-blue-300 flex justify-center items-center bg-blue-600/15 rounded-xl my-5 p-2 w-full'
+        >
+          {isEditing ? 'Cancel' : 'Edit Profile'}
+        </button>
+      )}
 
       <div className='flex flex-col justify-center gap-4 mx-2'>
         {isEditing ? (
@@ -162,47 +172,51 @@ const ProfileCard = () => {
           <>
             <h1 className='text-black/75 text-m'>{location}</h1>
             <h1 className='text-black/75 text-m'>{college}</h1>
-            <h1 className='text-black/75 text-m'>{user?.email || 'No Email'}</h1>
+            <h1 className='text-black/75 text-m'>{currentUser?.email || 'No Email'}</h1>
             <div className='flex items-center gap-36'>
               <h1 className='flex items-center justify-center text-black/75 text-m'>
                 <a href={linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
               </h1>
-              <button
-                onClick={handleLogout}
-                className="w-20 h-7 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-150 flex justify-center items-center"
-              >
-                Logout
-              </button>
+              {!externalData && (
+                <button
+                  onClick={handleLogout}
+                  className="w-20 h-7 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-150 flex justify-center items-center"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </>
         )}
       </div>
 
-      <div className="mt-6">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search by username"
-          className="p-2 border rounded w-full mb-2"
-        />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 w-full"
-        >
-          Search
-        </button>
+      {!externalData && (
+        <div className="mt-6">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by username"
+            className="p-2 border rounded w-full mb-2"
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 w-full"
+          >
+            Search
+          </button>
 
-        {searchResult && (
-          <div className="mt-4 border-t pt-3 text-sm text-black/80">
-            <p><strong>@{searchResult.username}</strong></p>
-            <p>Email: {searchResult.email}</p>
-            <p>College: {searchResult.college}</p>
-            <p>Location: {searchResult.location}</p>
-            <a href={searchResult.linkedin} className="text-blue-500" target="_blank" rel="noreferrer">LinkedIn</a>
-          </div>
-        )}
-      </div>
+          {searchResult && (
+            <div className="mt-4 border-t pt-3 text-sm text-black/80">
+              <p><strong>@{searchResult.username}</strong></p>
+              <p>Email: {searchResult.email}</p>
+              <p>College: {searchResult.college}</p>
+              <p>Location: {searchResult.location}</p>
+              <a href={searchResult.linkedin} className="text-blue-500" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -16,6 +16,7 @@ const PublicUserDashboard = () => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/user/by-username/${username}`);
+        console.log("Fetched Profile:", res.data); // 🔍 log profile
         setProfile(res.data);
       } catch (err) {
         setMessage('User not found');
@@ -25,6 +26,18 @@ const PublicUserDashboard = () => {
   }, [username]);
 
   if (!profile) return <div className="text-center mt-10">{message || 'Loading...'}</div>;
+
+  const difficultyBreakdown = ['Easy', 'Medium', 'Hard'].map(level => {
+    const levelQs = profile.allQuestions?.filter(q => q.difficulty === level) || [];
+    const solved = levelQs.filter(q => profile.solvedQuestions.includes(q._id)).length;
+    return {
+      level,
+      solved,
+      total: level === 'Easy' ? 50 : level === 'Medium' ? 30 : 20
+    };
+  });
+
+  console.log("Difficulty Breakdown:", difficultyBreakdown); // 🔍 check breakdown
 
   return (
     <>
@@ -40,6 +53,7 @@ const PublicUserDashboard = () => {
               totalSolved={profile?.solvedQuestions?.length || 0}
               totalSubmissions={profile?.submissionLog ? Object.values(profile.submissionLog).reduce((a, b) => a + b, 0) : 0}
               correctSubmissions={profile?.correctSubmissions || 0}
+              difficultyBreakdown={difficultyBreakdown}
             />
           </div>
           <div className="w-full flex justify-center items-center">
