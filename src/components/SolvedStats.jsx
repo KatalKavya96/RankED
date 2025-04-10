@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import RecentSolves from './RecentSolved';
-const SolvedStats = () => {
+
+const SolvedStats = ({ totalSolved: externalSolved, totalSubmissions: externalSubmissions, correctSubmissions: externalCorrect }) => {
   const [questions, setQuestions] = useState([]);
   const [accuracy, setAccuracy] = useState(0);
   const [totalSubmissions, setTotalSubmissions] = useState(0);
@@ -12,6 +13,12 @@ const SolvedStats = () => {
   };
 
   const updateSolvedStats = () => {
+    if (externalSolved !== undefined && externalSubmissions !== undefined && externalCorrect !== undefined) {
+      setTotalSubmissions(externalSubmissions);
+      setAccuracy(externalSubmissions > 0 ? Math.round((externalCorrect / externalSubmissions) * 100) : 0);
+      return;
+    }
+
     const solvedIds = JSON.parse(localStorage.getItem('solvedQuestions') || '[]');
     const allQuestions = JSON.parse(localStorage.getItem('allQuestions') || '[]');
     const wrongLog = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
@@ -36,7 +43,7 @@ const SolvedStats = () => {
       clearInterval(interval);
       window.removeEventListener('solvedStatsUpdate', handleStorageChange);
     };
-  }, []);
+  }, [externalSolved, externalSubmissions, externalCorrect]);
 
   const difficultyStats = ['Easy', 'Medium', 'Hard'].map(level => {
     const levelQs = questions.filter(q => q.difficulty === level);
@@ -44,7 +51,8 @@ const SolvedStats = () => {
     return { level, solved, total: totalQuestions[level] };
   });
 
-  const totalSolved = difficultyStats.reduce((sum, stat) => sum + stat.solved, 0);
+  const computedSolved = difficultyStats.reduce((sum, stat) => sum + stat.solved, 0);
+  const finalSolved = externalSolved !== undefined ? externalSolved : computedSolved;
 
   const colors = {
     Easy: '#06b6d4',
@@ -58,8 +66,6 @@ const SolvedStats = () => {
         {/* Circular Segmented Progress */}
         <div className="relative group" style={{ width: 130, height: 130 }}>
           <svg width="130" height="130" viewBox="0 0 36 36" className="rotate-[-90deg]">
-          
-
             {(() => {
               const radius = 15.9155;
               const circumference = 2 * Math.PI * radius;
@@ -70,9 +76,9 @@ const SolvedStats = () => {
                 cy="18"
                 r={radius}
                 fill="none"
-                stroke="rgba(255, 255, 255, 0.5)"  // Light transparent ring
+                stroke="rgba(255, 255, 255, 0.5)"
                 strokeWidth="2.2"
-            />
+              />
 
               return difficultyStats.map(({ level, solved, total }) => {
                 const percent = total > 0 ? solved / total : 0;
@@ -92,8 +98,7 @@ const SolvedStats = () => {
                     strokeDasharray={dashArray}
                     strokeDashoffset={dashOffset}
                     style={{
-                      transition: 'stroke-dasharray 0.6s ease, stroke-dashoffset 0.6s ease',
-                      
+                      transition: 'stroke-dasharray 0.6s ease, stroke-dashoffset 0.6s ease'
                     }}
                   />
                 );
@@ -101,7 +106,7 @@ const SolvedStats = () => {
             })()}
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none group-hover:opacity-0 transition-opacity">
-            <strong className="text-4xl text-black/70">{totalSolved}</strong>
+            <strong className="text-4xl text-black/70">{finalSolved}</strong>
             <span className="text-xs text-black/70">of {Object.values(totalQuestions).reduce((a, b) => a + b, 0)}</span>
             <p className="text-xs text-green-600 mt-2">✓ Solved</p>
           </div>
@@ -135,9 +140,6 @@ const SolvedStats = () => {
             </div>
           ))}
         </div>
-
-        {/* Recent Solves Component */}
-        {/* <RecentSolves questions={questions} />  Pass the questions prop */}
       </div>
     </section>
   );

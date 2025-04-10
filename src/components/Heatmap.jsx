@@ -4,48 +4,58 @@ import 'react-calendar-heatmap/dist/styles.css';
 import { subDays, format, isSameDay, parseISO } from 'date-fns';
 import "../index.css"
 
+const calculateStreakFromData = (log) => {
+  const dates = Object.keys(log).filter(date => log[date] > 0).map(d => parseISO(d));
+  dates.sort((a, b) => b - a);
 
+  let streak = 0;
+  let day = new Date();
 
-const calculateStreak = () => {
-  
-    const log = JSON.parse(localStorage.getItem('submissionLog') || '{}');
-    const dates = Object.keys(log).filter(date => log[date] > 0).map(d => parseISO(d));
-    dates.sort((a, b) => b - a); // Descending
-  
-    let streak = 0;
-    let day = new Date(); // Start from today
-  
-    for (let i = 0; i < 366; i++) {
-      const found = dates.find(d => isSameDay(d, day));
-      if (found) {
-        streak++;
-        day = subDays(day, 1); // Move to previous day
-      } else {
-        break; // streak breaks
-      }
+  for (let i = 0; i < 366; i++) {
+    const found = dates.find(d => isSameDay(d, day));
+    if (found) {
+      streak++;
+      day = subDays(day, 1);
+    } else {
+      break;
     }
-  
-    return streak;
-  };
+  }
+  return streak;
+};
 
 const getSubmissionHeatmapData = () => {
   const log = JSON.parse(localStorage.getItem('submissionLog') || '{}');
   return Object.entries(log).map(([date, count]) => ({ date, count }));
 };
 
-const Heatmap = () => {
-  const [data, setData] = useState(getSubmissionHeatmapData());
-  const [streak, setStreak] = useState(calculateStreak());
+const Heatmap = ({ data: externalData }) => {
+  const [data, setData] = useState([]);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setData(getSubmissionHeatmapData());
-      setStreak(calculateStreak());
-    }, 2000); // live update
-    return () => clearInterval(interval);
-  }, []);
+    if (externalData) {
+      const formatted = Object.entries(externalData).map(([date, count]) => ({ date, count }));
+      setData(formatted);
+      setStreak(calculateStreakFromData(externalData));
+    } else {
+      const internal = getSubmissionHeatmapData();
+      setData(internal);
+      setStreak(calculateStreakFromData(
+        Object.fromEntries(internal.map(d => [d.date, d.count]))
+      ));
 
-  
+      const interval = setInterval(() => {
+        const updated = getSubmissionHeatmapData();
+        setData(updated);
+        setStreak(calculateStreakFromData(
+          Object.fromEntries(updated.map(d => [d.date, d.count]))
+        ));
+      }, 2000);
+
+      return () => clearInterval(interval);
+    }
+  }, [externalData]);
+
   return (
     <section className="h-auto w-full max-w-[950px] border border-black/25 rounded-xl text-black bg-white  px-5 py-5 shadow-xl">
       <div className="flex justify-between items-center px-2 pb-4">
@@ -130,7 +140,6 @@ const Heatmap = () => {
           margin-right: 15px;
         }
       `}</style>
-      
     </section>
   );
 };

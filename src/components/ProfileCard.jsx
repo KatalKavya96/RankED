@@ -90,7 +90,7 @@ const ProfileCard = () => {
   const handleSearch = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/user/by-username/${searchInput}`);
-      setSearchResult(res.data);
+      navigate(`/user/${searchInput}`);
     } catch (err) {
       alert("User not found.");
       setSearchResult(null);
