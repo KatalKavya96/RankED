@@ -100,7 +100,7 @@ const Heatmap = () => {
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-1 {
-          fill: #f1f5f9;
+          fill: #B8D6FF;
           transition: fill 0.3s;
         }
         .react-calendar-heatmap .color-scale-2 {
