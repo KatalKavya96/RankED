@@ -15,6 +15,7 @@ import Login from './components/Login.jsx'
 import Signup from './components/Signup.jsx'
 import { UserProvider } from './components/UserContext.jsx';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx'
+import PublicDashboard from './components/PublicDashboard.jsx'
 
 
 
@@ -33,6 +34,8 @@ function App() {
           <Route path="/chemistry/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
           <Route path="/maths/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
           <Route path="/profile" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
+          <Route path="/user/:username" element={<PublicDashboard />} />
+
         </Routes>
       </Router>
     </UserProvider>
