@@ -16,6 +16,8 @@ import Signup from './components/Signup.jsx'
 import { UserProvider } from './components/UserContext.jsx';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx'
 import PublicDashboard from './components/PublicDashboard.jsx'
+import PublicUserDashboard from './components/PublicUserDashboard.jsx'
+
 
 
 
@@ -35,6 +37,8 @@ function App() {
           <Route path="/maths/:chapter" element={<ProtectedRoutes><ChapterQuestions /></ProtectedRoutes>} />
           <Route path="/profile" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
           <Route path="/user/:username" element={<PublicDashboard />} />
+          <Route path="/dashboard/:username" element={<PublicUserDashboard />} />
+
 
         </Routes>
       </Router>
