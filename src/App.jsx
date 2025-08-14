@@ -17,6 +17,7 @@ import { UserProvider } from './components/UserContext.jsx';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx'
 import PublicDashboard from './components/PublicDashboard.jsx'
 import PublicUserDashboard from './components/PublicUserDashboard.jsx'
+import DarkHome from './Pages/DarkHomepage.jsx'
 
 
 
@@ -27,6 +28,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/darkhome" element={<DarkHome />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/physics" element={<ProtectedRoutes><PhysicsQ /></ProtectedRoutes>} />

@@ -5,6 +5,7 @@ import Chemistry from './components/Chemistry.jsx'
 import Maths from './components/Maths.jsx'
 import PhysicsQ from './components/PhysicsQ.jsx'
 import Exams from './components/Exams.jsx'
+import Planner from "./components/PlannerSection/Planner.jsx"
 
 const examsList=[{"exam":"JEE Main", "img":"https://app-assets.cdn.examgoal.net/fly/@width/image/exam-icons/in/jee/jee-main.png", "altt" : "JEE Main"},
   {"exam":"JEE Advanced", "img":"https://app-assets.cdn.examgoal.net/fly/@width/image/exam-icons/in/jee/jee-advanced.png"},
@@ -37,7 +38,9 @@ const HomePage = () => {
               </div>
             </section>
           </div>
-          <section className='h-[75.8vh] w-[280px] min-w-[270px]  border border-black/45 bg-white rounded-xl shadow-[1px_3px_3px_1px_rgba(0,0,0,0.5)]'>
+          <section className='h-[75.8vh] w-[280px] min-w-[270px]  border border-black/45 bg-white rounded-xl shadow-[1px_3px_3px_1px_rgba(0,0,0,0.5)] flex justify-center'>
+
+            <div className='h-[25%] w-[92%] border border-black/45 rounded-xl p-2 m-2'>Take Daily Challenge</div>
           
 
           </section>
