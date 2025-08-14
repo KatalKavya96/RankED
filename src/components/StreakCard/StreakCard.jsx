@@ -2,7 +2,7 @@ import React from "react";
 
 export default function StreakCard() {
   return (
-    <aside className="w-96 min-w-80 h-fit bg-[#191919] text-gray-200 rounded-2xl p-5 border border-[#2b2b2b]">
+    <aside className="w-60 min-w-80 h-fit bg-[#191919] text-gray-200 rounded-2xl p-5 border border-[#2b2b2b]">
       <div className="flex items-center justify-between">
         <div>
           <div className="text-lg font-semibold">Day 13</div>

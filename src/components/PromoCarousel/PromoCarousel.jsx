@@ -12,7 +12,7 @@ export default function PromoCarousel({ cards }) {
             <div className="text-sm opacity-90">{c.subtitle}</div>
             <div className="text-xl font-bold">{c.title}</div>
           </div>
-          <button className="self-start bg-white/95 text-[#1b1b1b] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-white">
+          <button className="self-start bg-white/95 text-[#1b1b1b] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-white hover:scale-102 transition transition-duration-100">
             {c.cta}
           </button>
         </div>

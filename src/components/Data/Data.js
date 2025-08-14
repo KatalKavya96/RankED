@@ -1,22 +1,22 @@
 export const promoCards = [
     { id: 1, title: "Take a 10-Q Challenge", subtitle: "Mixed questions for your exam", cta: "Start Now" },
-    { id: 2, title: "Top Interview Questions", subtitle: "Handpicked essentials", cta: "Get Started" },
-    { id: 3, title: "Crash Course", subtitle: "Master DS & Algo", cta: "Begin" },
+    { id: 2, title: "Top Exam Questions", subtitle: "Handpicked essentials", cta: "Get Started" },
+    { id: 3, title: "Crash Course", subtitle: "Master Time Based Question Handling", cta: "Begin" },
   ];
   
   export const subjects = [
     { id: "all", name: "All Topics" },
-    { id: "alg", name: "Algorithms" },
-    { id: "db", name: "Database" },
-    { id: "shell", name: "Shell" },
-    { id: "cn", name: "Networks" },
+    { id: "phy", name: "Physics" },
+    { id: "math", name: "Mathematics" },
+    { id: "chem", name: "Chemistry" },
+    { id: "bio", name: "Biology" },
   ];
   
   export const chapters = [
-    { id: "arrays", name: "Array", count: 1962 },
-    { id: "strings", name: "String", count: 808 },
-    { id: "hash", name: "Hash Table", count: 720 },
-    { id: "dp", name: "Dynamic Programming", count: 606 },
+    { id: "arrays", name: "Conic Sections", count: 1962 },
+    { id: "strings", name: "Electrostatics", count: 808 },
+    { id: "hash", name: "Organic Chemistry", count: 720 },
+    { id: "dp", name: "Semiconductors", count: 606 },
     { id: "math", name: "Math", count: 660 },
   ];
   

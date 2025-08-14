@@ -1,7 +1,8 @@
-import React from "react";
+import React,{useState} from "react";
 import { IconBook, IconCap, IconStar, IconNote, IconLock, IconGlobe } from "../Icons/Icons.jsx";
 
 export default function Sidebar() {
+
   return (
     <aside className="bg-[#151515] text-white w-72 min-w-72 h-screen p-4 flex flex-col border-r border-[#2b2b2b]">
       {/* Primary buttons */}
@@ -21,7 +22,7 @@ export default function Sidebar() {
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-3 hover:bg-[#242424] px-2 py-2 rounded cursor-pointer">
+        <div onCLick={showBookmarks()} className="flex items-center gap-3 hover:bg-[#242424] px-2 py-2 rounded cursor-pointer">
           <IconStar className="w-5 h-5 text-yellow-400" />
           <span>Favorite</span>
           <IconLock className="w-5 h-5 text-gray-400 ml-auto" />

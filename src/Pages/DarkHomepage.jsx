@@ -13,15 +13,12 @@ export default function DarkHome() {
   const total = Array.isArray(questions) ? questions.length : 0;
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white overflow-x-hidden">
-      {/* Full-bleed row: Sidebar | Content | Streak */}
+    <div className="min-h-screen bg-[#0f0f0f] text-white overflow-x-hidden flex">
       <div className="w-full flex">
-        {/* Left planner flush to edge */}
         <Sidebar />
 
-        {/* Center content with its own max width */}
-        <main className="flex-1">
-          <div className="px-6 py-6 w-full max-w-[1200px] mx-auto">
+        <main className="w-500">
+          <div className="w-200 px-6 py-6 max-w-[1200px] mx-auto">
             <PromoCarousel cards={promoCards} />
 
             <section className="mt-5">
@@ -42,13 +39,11 @@ export default function DarkHome() {
           </div>
         </main>
 
-        {/* Right streak/calendar inside dark row */}
-        <aside className="hidden lg:block px-4 py-6">
-          {/* Make it sticky so it stays in view; adjust top if your navbar is fixed */}
-          <div className="sticky top-24">
-            <StreakCard />
-          </div>
-        </aside>
+        
+        <div className="mt-6 mr-6">
+            <StreakCard/>
+        </div>
+        
       </div>
     </div>
   );
