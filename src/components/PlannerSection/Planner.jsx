@@ -15,7 +15,6 @@ export default function Sidebar() {
 
       <div className="h-px bg-[#2b2b2b] my-5" />
 
-      {/* My Lists */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-gray-300 font-semibold">My Lists</span>
         <button className="text-gray-400 hover:text-white text-xl leading-none">+</button>
