@@ -18,6 +18,7 @@ import ProtectedRoutes from './components/ProtectedRoutes.jsx'
 import PublicDashboard from './components/PublicDashboard.jsx'
 import PublicUserDashboard from './components/PublicUserDashboard.jsx'
 import DarkHome from './Pages/DarkHomepage.jsx'
+import MainHome from "./Pages/MainHomepage.jsx"
 
 
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/profile" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
           <Route path="/user/:username" element={<PublicDashboard />} />
           <Route path="/dashboard/:username" element={<PublicUserDashboard />} />
+          <Route path="/mainhome" element={<MainHome/>}></Route>
 
 
         </Routes>

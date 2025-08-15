@@ -7,13 +7,18 @@ import Toolbar from "../components/Toolbar/Toolbar";
 import QuestionList from "../components/QuestionList/QuestionList";
 import StreakCard from "../components/StreakCard/StreakCard";
 import { promoCards, subjects, chapters, questions } from "../components/Data/Data";
+import Navbar from "../components/Navbar";
 
 export default function DarkHome() {
   const solved = Array.isArray(questions) ? questions.filter((q) => q.solved).length : 0;
   const total = Array.isArray(questions) ? questions.length : 0;
 
   return (
+    <>
+    <Navbar/>
+    
     <div className="min-h-screen bg-[#0f0f0f] text-white overflow-x-hidden flex">
+    
       <div className="w-full flex">
         <Sidebar />
 
@@ -46,5 +51,6 @@ export default function DarkHome() {
         
       </div>
     </div>
+    </>
   );
 }

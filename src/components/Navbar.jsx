@@ -33,8 +33,8 @@ const Navbar = () => {
   }, []);
 
   return (
-    <section className="w-full fixed top-0 z-50">
-      <div className="flex justify-between items-center px-[3vw] border border-black bg-black/70 text-white/80">
+    <section className="w-full  bg-[#242424]  border-b border-[#2b2b2b]">
+      <div className="flex justify-between items-center px-[3vw] border border-black bg-[#121212] text-white/80">
         <div className="flex items-center gap-10">
           <img
             className="h-20 w-22"
@@ -53,6 +53,14 @@ const Navbar = () => {
             title="LeetCode-style dark homepage"
           >
             DarkHome
+          </div>
+
+          <div
+            onClick={() => navigate("/mainhome")}
+            className="w-28 font-medium hover:bg-white/15 p-2 rounded-2xl flex items-center justify-center cursor-pointer"
+            title="LeetCode-style dark homepage"
+          >
+            MainPage
           </div>
 
           <div
